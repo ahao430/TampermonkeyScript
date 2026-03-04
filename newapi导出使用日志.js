@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         NewAPI 使用日志导出
-// @namespace    https://www.tampermonkey.net/
+// @namespace    https://github.com/ahao430/TampermonkeyScript
 // @version      2026-03-04
 // @description  日志页新增导出按钮，支持 CSV/XLSX/JSON，全量导出（忽略分页）。在下方@match增加匹配页面。
 // @author       wanghao
