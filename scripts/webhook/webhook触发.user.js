@@ -10,6 +10,8 @@
 // @grant        GM_setValue
 // @grant        GM_addStyle
 // @license      MIT
+// @downloadURL https://update.greasyfork.org/scripts/584709/Webhook%20%E8%A7%A6%E5%8F%91.user.js
+// @updateURL https://update.greasyfork.org/scripts/584709/Webhook%20%E8%A7%A6%E5%8F%91.meta.js
 // ==/UserScript==
 
 (function () {

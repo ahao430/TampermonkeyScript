@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         NewAPI 管理员增强脚本
 // @namespace    https://github.com/ahao430/TampermonkeyScript
-// @version      2026-03-17
+// @version      2026-05-12
 // @description  在 NewAPI 控制台增强日志导出、用户批量添加与额度批量修改能力。
 // @author       wanghao
 // @match        https://agentrouter.org/console/*
 // @grant        none
 // @license      MIT
+// @downloadURL https://update.greasyfork.org/scripts/569980/NewAPI%20%E7%AE%A1%E7%90%86%E5%91%98%E5%A2%9E%E5%BC%BA%E8%84%9A%E6%9C%AC.user.js
+// @updateURL https://update.greasyfork.org/scripts/569980/NewAPI%20%E7%AE%A1%E7%90%86%E5%91%98%E5%A2%9E%E5%BC%BA%E8%84%9A%E6%9C%AC.meta.js
 // ==/UserScript==
 
 (function () {

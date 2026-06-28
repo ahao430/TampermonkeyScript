@@ -4,10 +4,10 @@
 
 ## 脚本列表
 
-| 脚本 | 说明 |
-|------|------|
-| [Webhook 触发](scripts/webhook/webhook触发.user.js) | 在任意网站注入可配置按钮，点击触发 Webhook |
-| [NewAPI 管理员增强](scripts/newapi/newapi管理员增强脚本.js) | NewAPI 控制台日志导出、用户批量添加与额度批量修改 |
+| 脚本 | 说明 | Greasy Fork |
+|------|------|-------------|
+| [Webhook 触发](scripts/webhook/webhook触发.user.js) | 在任意网站注入可配置按钮，点击触发 Webhook | [安装](https://greasyfork.org/zh-CN/scripts/584709-webhook-%E8%A7%A6%E5%8F%91) |
+| [NewAPI 管理员增强](scripts/newapi/newapi管理员增强脚本.js) | NewAPI 控制台日志导出、用户批量添加与额度批量修改 | [安装](https://greasyfork.org/zh-CN/scripts/569980-newapi-%E7%AE%A1%E7%90%86%E5%91%98%E5%A2%9E%E5%BC%BA%E8%84%9A%E6%9C%AC) |
 
 ## 油猴脚本基本格式
 
