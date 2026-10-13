@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         网页工具箱（Webhook + 随机滚动）
 // @namespace    https://github.com/ahao430/TampermonkeyScript
-// @version      2.1.1
+// @version      2.2.0
 // @description  全站网页工具箱：Webhook 触发与随机滚动
 // @author       wanghao
 // @match        *://*/*
@@ -1059,6 +1059,8 @@
     longPauseMax: 3500,
     bottomAction: 'stop',
     bottomThreshold: 5,
+    bottomRetries: 3,
+    bottomRetryWait: 800,
     autoStart: false,
   };
 
@@ -1185,9 +1187,68 @@
     scrollSetStatus('已停止', '可以随时重新开始');
   }
 
+  // 底部确认：下拉加载的页面加载慢，刚到底时新内容还没撑高页面，
+  // 会误判已到底。到底后先重试几次（等待 + 上移再回滚探测），
+  // 确认不会再触发加载，才认定真正的底部。
+  // 返回 true = 确认到底；false = 加载出了新内容，应继续滚动；
+  // null = 滚动已被停止或重启。
+  async function confirmBottom(id) {
+    var retries = Math.max(0, scrollConfig.bottomRetries || 0);
+    var wait = Math.max(100, scrollConfig.bottomRetryWait || 800);
+
+    for (var i = 1; i <= retries; i++) {
+      scrollSetStatus(
+        '正在确认底部',
+        '第 ' + i + '/' + retries + ' 次重试，等待新内容加载…'
+      );
+
+      if (!await scrollSleep(wait, id)) return null;
+
+      if (!scrollRunning || id !== scrollRunId) return null;
+
+      // 等待期间页面变高了：还有新内容，继续正常滚动
+      if (!scrollAtBottom()) return false;
+
+      // 轻微上移再滚回底部，重新触发滚动事件 / 懒加载监听
+      scrollSetStatus(
+        '正在确认底部',
+        '第 ' + i + '/' + retries + ' 次重试，回滚探测…'
+      );
+
+      if (!await scrollAnimate(
+        -scrollRandom(40, 120),
+        scrollRandom(150, 300),
+        id,
+        false
+      )) return null;
+
+      if (!await scrollSleep(scrollRandom(200, 400), id)) return null;
+
+      if (!await scrollAnimate(
+        scrollRandom(80, 180),
+        scrollRandom(150, 300),
+        id,
+        false
+      )) return null;
+
+      if (!scrollRunning || id !== scrollRunId) return null;
+
+      // 回滚后页面变高了：不再处于底部，说明触发到了加载
+      if (!scrollAtBottom()) return false;
+    }
+
+    return true;
+  }
+
   async function runScroll(id) {
     while (scrollRunning && id === scrollRunId) {
       if (scrollAtBottom()) {
+        var confirmed = await confirmBottom(id);
+
+        if (confirmed === null) return;
+
+        if (!confirmed) continue;
+
         if (scrollConfig.bottomAction === 'top') {
           scrollSetStatus('正在返回顶部', '回到顶部后继续滚动');
 
@@ -1204,7 +1265,11 @@
         }
 
         stopScroll();
-        scrollSetStatus('已到达底部', '滚动已自动停止');
+        scrollSetStatus(
+          '已到达底部',
+          '重试 ' + (scrollConfig.bottomRetries || 0) +
+            ' 次确认无新内容，滚动已自动停止'
+        );
         return;
       }
 
@@ -1303,6 +1368,8 @@
       '<option value="top">回顶部继续</option>' +
       '</select></label>' +
       scrollField('bottomThreshold', '底部判断距离（px）', 0, 500, 1) +
+      scrollField('bottomRetries', '底部确认重试次数', 0, 20, 1) +
+      scrollField('bottomRetryWait', '底部重试等待（ms）', 100, 60000, 100) +
       '<label class="wt-check"><input type="checkbox" data-scroll-key="autoStart" ' +
       (scrollConfig.autoStart ? 'checked' : '') +
       '> 页面加载后自动开始</label></div>' +
